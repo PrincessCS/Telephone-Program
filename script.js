@@ -6,10 +6,12 @@ class Telephone{
         this.phoneNumber = [];
         this.observers = [];
     }
+
     addPhoneNumber(number) {
         if (!this.phoneNumber.includes(number)) {
             this.phoneNumber.push(number);
-            this.notifyObservers('added', number);
+            console.log(`Added ${number} to the list of Phonenumbers.`);
+           
         }
     }
 
@@ -17,13 +19,18 @@ class Telephone{
         const index = this.phoneNumber.indexOf(number);
         if (index !== -1) {
             this.phoneNumber.splice(index, 1);
-            this.notifyObservers('removed', number);
+            console.log(`${number} has been removed from list of Phonenumbers.`);
+          
+        }
+        else {
+            console.log(`Phone number ${number} not found in list.`);
         }
     }
 
     dialPhoneNumber(number) {
         if (this.phoneNumber.includes(number)) {
             console.log(`Dialing ${number}...`);
+            this.notifyObservers(`dialed, ${number}`);
         } else {
             console.log(`Could not dial ${number}. Number not found!`);
         }
@@ -48,13 +55,14 @@ class Telephone{
 }
 
 
-class updateObserver {
+class Observer {
 
     constructor(name){
         this.name = name;
     }
+   
     update(action, number) {
-        console.log(`${this.name}: Phone number ${number} has been ${action}.`);
+        console.log(`${this.name}: Now Dialling ${number}`);
     }
 }
 
@@ -62,24 +70,28 @@ class updateObserver {
 // creating an instance of the Telephone class
 const telephone = new Telephone();
 
-//adding phonenumbers to the phoneNumber array
-telephone.addPhoneNumber("1234");
+/*adding observers. The first observer prints the number to the console
+the second observer prints now dialling 2347023232*/
+
+const observer1 = {
+
+    update(action, number) {
+        console.log(`Observer 1:${number}`);
+    }
+};
+const observer2 = new Observer("Observer 2");
+
+
+telephone.addObserver(observer1);
+telephone.addObserver(observer2);
+
 telephone.addPhoneNumber("12345");
-telephone.addPhoneNumber("123456");
-telephone.addPhoneNumber("1234567");
+telephone.addPhoneNumber("2347023232");
+telephone.dialPhoneNumber("2347023232");
 
-//removing a phonenumber
-telephone.removePhoneNumber("1234567");
-
-//dialling a removed phonenumber
-telephone.dialPhoneNumber("1234567");
-
-
-
-//creating an instance of the updateObserver class
-const observer = new updateObserver("Observer 1");
+const observer = new Observer("Observer 1");
 telephone.observers.push(observer);
-observer.update ("added", "12345");
+
 
 
 
